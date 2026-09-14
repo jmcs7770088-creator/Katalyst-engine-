@@ -9,9 +9,9 @@ import time
 # ==========================================
 # UNIVERSAL GSRT / PROJECT IRR CONSTANTS
 # ==========================================
-OMEGA_G = 0.835102   # Geometric Stability Constant[span_9](start_span)[span_9](end_span)[span_10](start_span)[span_10](end_span)
-ZETA_H  = 0.001756   # Torsion Drift Threshold[span_11](start_span)[span_11](end_span)[span_12](start_span)[span_12](end_span)
-PHI     = 1.618034   # Golden Ratio Anchor[span_13](start_span)[span_13](end_span)
+OMEGA_G = 0.835102   # Geometric Stability Constant
+ZETA_H  = 0.001756   # Torsion Drift Threshold
+PHI     = 1.618034   # Golden Ratio Anchor
 DEFAULT_PORT = 9090  # Default Multi-Node PNT TCP Port
 
 # ==========================================
@@ -117,23 +117,23 @@ class BMTIntrinsicReceiver:
         mu = np.mean(raw_arr)
         variance = np.var(raw_arr)
         
-        # Calculate Structural Drift Factor D[span_14](start_span)[span_14](end_span)
+        # Calculate Structural Drift Factor D
         D = math.sqrt(variance) * OMEGA_G
         
         mirror_triggered = False
         k_hat = np.array([0.0, 0.0, 1.0]) # Orthogonal mirror axis
         
-        # Check against Torsion Threshold (zeta_H)[span_15](start_span)[span_15](end_span)
+        # Check against Torsion Threshold (zeta_H)
         if D > ZETA_H:
             mirror_triggered = True
-            # Execute 90-degree vector shift and mirror reversion (E_n+1 = k_hat x E_n)[span_16](start_span)[span_16](end_span)
+            # Execute 90-degree vector shift and mirror reversion (E_n+1 = k_hat x E_n)
             vec_sum = np.sum(raw_arr) * k_hat
             corrected_vector = np.cross(k_hat, vec_sum)
-            # Clamp to stillness floor F_c = 0 and clamp to Phi ratio[span_17](start_span)[span_17](end_span)
+            # Clamp to stillness floor F_c = 0 and clamp to Phi ratio
             self.position_lock += (corrected_vector / PHI) * OMEGA_G
             self.stillness_floor = 0.0
         else:
-            # Absolute PNT coordinate resolution relative to V0[span_18](start_span)[span_18](end_span)[span_19](start_span)[span_19](end_span)
+            # Absolute PNT coordinate resolution relative to V0
             self.position_lock += np.mean(raw_arr, axis=0) * OMEGA_G
             self.stillness_floor = D
 
@@ -151,13 +151,13 @@ class BMTIntrinsicReceiver:
 st.set_page_config(page_title="KATALYST BMT Node Terminal", layout="wide")
 
 st.title("⚡ KATALYST Sovereign Terminal Kernel v5.0")
-st.subtitle("Project IRR: Satellite-Free Intrinsic Medium PNT Engine & Socket Mesh")
+st.markdown("### Project IRR: Satellite-Free Intrinsic Medium PNT Engine & Socket Mesh")
 
 col_left, col_right = st.columns([1, 1])
 
 with col_left:
     st.header("🛰️ 1+6 Transducer PNT Solver")
-    st.write("Calculates 3D position locks without satellite RF signals via local topological strain[span_20](start_span)[span_20](end_span)[span_21](start_span)[span_21](end_span).")
+    st.write("Calculates 3D position locks without satellite RF signals via local topological strain.")
     
     # Input sliders for the 6-axis transducer signals
     s1 = st.slider("Node 1: +X Strain", -2.0, 2.0, 0.12)
